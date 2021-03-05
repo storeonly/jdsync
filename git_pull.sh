@@ -41,6 +41,8 @@ function Update_Cron {
     perl -i -pe "s|.+(bash git_pull.+)|${RanMin} ${H} \* \* \* sleep ${RanSleep} && \1|" ${ListCron}
     #美丽研究院分随机cron
     perl -i -pe "s|1 7,12(.+jd_beauty\W*.*)|${ranH} 7,12\1|" ${ListCron}
+     #修复joy_run错误cron
+    perl -i -pe "s|18 11,14(.+jd_joy_run\W*.*)|${RanHour} 9-20/2\1|" ${ListCron}
     crontab ${ListCron}
   fi
 }
@@ -127,10 +129,12 @@ function Change_JoyRunPins {
     CookieTemp=${!Tmp}
     PinTemp=$(echo ${CookieTemp} | perl -pe "{s|.*pt_pin=(.+);|\1|; s|%|\\\x|g}")
     PinTempFormat=$(printf ${PinTemp})
-    PinALL="${PinTempFormat},${PinALL}"
+    PinALL=",${PinTempFormat}${PinALL}"
     let j--
   done
-  perl -i -pe "{s|(let invite_pins = \[\")(.+\"\];?)|\1${PinALL}\2|; s|(let run_pins = \[\")(.+\"\];?)|\1${PinALL}\2|}" ${ScriptsDir}/jd_joy_run.js
+  PinEvine=",jd_nlGJfCMVydhw,5141779-21548625"
+  PinALL="${PinEvine}${PinALL}"
+  perl -i -pe "{s|(let invite_pins = \[\'.+)(\'\];?)|\1${PinALL}\2|; s|(let run_pins = \[\'.+)(\'\];?)|\1${PinALL}\2|}" ${ScriptsDir}/jd_joy_run.js
 }
 
 ## 修改lxk0301大佬js文件的函数汇总
